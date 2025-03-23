@@ -1,97 +1,146 @@
 #include <stdio.h>
 
 // Desafio Batalha Naval - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
-// Siga os comentários para implementar cada parte do desafio.
+// Nível Mestre - Habilidades Especiais com Matrizes
 
-int main() {
-    // Nível Novato - Posicionamento dos Navios
-    // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
+#define Coluna 10
+#define Linha 10
+#define Navio 3
+#define Cone 4 
+#define Octaedro 5
+#define Cruz 6
 
-    // Variáveis:
-    int colunaH = 7, linhaH = 2; // Posiciona o navio na horizontal.
-    int colunaV = 2, linhaV = 7; // Posiciona o navio na vertical.
-    // Vetores incializados (Arrays):
-    int navioH[3] = {3,3,3}; 
-    int navioV[3] = {3,3,3};
-    int linha[10] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-    // Matriz do tabuleiro (10x10):
-    int tabuleiro[10][10];
 
-    // Incializando o tabuleiro:
-    for (int i = 0; i < 10; i++)
-    {   
-        for(int j = 0; j < 10; j++)
-        {
-            tabuleiro[i][j] = 0;// Atribui um valor em cada coluna e linha da matriz
-        }
-    }
+void ImprimeTabuleiro(int tabuleiro[Coluna][Linha]) {   
+    char linha[Coluna] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'}; // Vetor que representa as colunas
 
-    // Atribuindo o navio da linha horizontal
-    for (int i = 0; i < 3; i++)
-    {
-        tabuleiro[linhaH][colunaH + i] = navioH[2]; // Adiciona o valor 3 nas posições em que o navio se encontra
-    }  
-
-    // Atribuindo o navio da coluna vertical:
-    for (int i = 0; i < 3; i++)
-    {
-        tabuleiro[linhaV + i][colunaV] = navioV[2]; // Adiciona o valor 3 nas posições em que o navio se encontra
-    }  
-  
     // Imprime o tabuleiro:
     printf("\n\t<-- TABULEIRO BATALHA NAVAL -- >\n\n");
-    printf("\t");
+    printf("    ");
     
     // Imprime as colunas em ordem alfabetica:
-    for (int i = 0; i < 10; i++)
-    {
+    for (int i = 0; i < Linha; i++) {
         printf(" %c ", linha[i]);
     }
 
     // Elemento visual para facilitar a visualização do tabuleiro:
-    printf("\n\t_____________________________\n");
+    printf("\n_________________________________\n");
     
     // Imprime as linhas e o tabuleiro com os navios posicionados:
-    for (int i = 0; i < 10; i++) {
-        printf("%d |\t", i);
-        for (int j = 0; j < 10; j++) {
+    for (int i = 0; i < Linha; i++) {
+        printf("%2d |", i + 1);
+        for (int j = 0; j < Coluna; j++) {
             printf(" %d ", tabuleiro[i][j]);
         }
         printf("\n");
     }
+}
 
-    return 0;
+void ImprimeOctaedro(int tabuleiro[Linha][Coluna], int linha, int coluna) {
+    // Atribuindo Octaedro:
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (j == 2 || (i == 1 && j >= 2 - i && j <= 2 + i) || (i == 2 && j >= 2 - i && j <= 2 + i) || (i == 3 && j <= i && j > 0))
+            {   
+                /*
+                - Cond1: Se J == 2: Preenche com 2.
+                - Cond2: Ou se I for indice 1 e J for igual a (1,2,3) -> [2 - 1 = 1 | 2 + 1 = 3] -> Range de (1 a 3)
+                - Cond3: Ou se I for indice 2 e J for igual a (0,1,2,3) -> [2 - 2 = 0| 2 + 2 = 4] - Range de (0 a 4)
+                - Cond4: Ou se I for indice 3 e J for menor que I e maior que 0.
+                */
+                if (tabuleiro[i + linha][j + coluna] != 0) {
+                    tabuleiro[i + linha][ j + coluna] = 1; // Se o elemento ja estiver preenchido recebe o valor 1
+                } else {
+                    tabuleiro[i + linha][ j + coluna] = Octaedro; // Se o elemento não estiver preenchido recebe o valor 5
+                }
+            }
+        }
+    }
+}
 
+void ImprimeCone(int tabuleiro[Linha][Coluna], int linha, int coluna) {
+    // Atribuindo Cone:
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (j >= 2 - i && j <= 2 + i) {
+                if (tabuleiro[i + linha][j + coluna] != 0) { 
+                    tabuleiro[i + linha][ j + coluna] = 1; // Se o elemento ja estiver preenchido recebe o valor 1
+                } else {
+                    tabuleiro[i + linha][ j + coluna] = Cone; // Se o elemento não estiver preenchido recebe o valor 4
+                }
+            }
+        }
+    }
+}
 
+void ImprimeCruz (int tabuleiro[Linha][Coluna], int linha, int coluna) {
+    // Atribuindo o Cruz:
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (j == 2 || i == 2) { // Se J for igual a 2 ou I igual a 2 o elemento é preenchido.
+                if (tabuleiro[i + linha][j + coluna] != 0) { 
+                    tabuleiro[i + linha][ j + coluna] = 1; // Se o elemento ja estiver preenchido recebe o valor 1
+                } else {
+                    tabuleiro[i + linha][ j + coluna] = Cruz; // Se o elemento não estiver preenchido recebe o valor 6
+                }
+            }
+        }
+    } 
+}
 
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
+void ImprimeNavio (int tabuleiro[Linha][Coluna], int linha, int coluna, int posicao){
+    for (int i = 0; i < Navio; i++)
+    {
+        if (posicao == 1) { // Imprime na Horizontal
+            if (tabuleiro[linha][coluna + i] != 0) {  // Se o elemento estiver preenchido recebe 1
+                tabuleiro[linha][coluna + i] = 1; 
+            } else {
+                tabuleiro[linha][coluna + i] = Navio;  // Se o elemento não estiver preenchido recebe 3
+            }
+        } else if (posicao == 2) { // Imprime na Vertical
+            if (tabuleiro[linha + i][coluna] != 0) {  // Se o elemento estiver preenchido recebe 1
+                tabuleiro[linha + i][coluna] = 1; 
+            } else {
+                tabuleiro[linha + i][coluna] = Navio;  // Se o elemento não estiver preenchido recebe 3
+            }
+        } else if (posicao == 3) { // Imprime na Diagonal Esquerda
+            if (tabuleiro[linha + i][coluna + i] != 0) {  // Se o elemento estiver preenchido recebe 1
+                tabuleiro[linha + i][coluna + i] = 1; 
+            } else {
+                tabuleiro[linha + i][coluna + i] = Navio;  // Se o elemento não estiver preenchido recebe 3
+            }
+        } else if (posicao == 4) { // Imprime na Diagonal Direita
+            if (tabuleiro[linha - i][coluna + i] != 0) {  // Se o elemento estiver preenchido recebe 1
+                tabuleiro[linha - i][coluna + i] = 1; 
+            } else {
+                tabuleiro[linha - i][coluna + i] = Navio; // Se o elemento não estiver preenchido recebe 3
+            }
+        }
+    }
+}
 
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
+int main() {
+    // Variáveis:
+    int colunaH = 7, linhaH = 6; // Posiciona o navio na Horizontal.
+    int colunaV = 7, linhaV = 2; // Posiciona o navio na Vertical.
+    int colunaD1 = 1, linhaD1 = 7; // Posiciona o navio na diagonal Esquerda.
+    int colunaD2 = 1, linhaD2 = 2; // Posiciona o navio na diagonal Direita.
+    int colunaO = 5, linhaO= 5; // Posiciona o octaedro.
+    int colunaC = 3, linhaC = 1; // Posiciona a cruz.
+    int colunaCo = 1, linhaCo = 7; // Posiciona o cone.
 
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
+    //Matriz do tabuleiro (10x10 inicializado com 0:
+    int tabuleiro[Linha][Coluna] = {0};
     
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
-
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
+    // Atribui e imprime os elementos de Navios e habilidades:
+    ImprimeCone(tabuleiro, linhaCo, colunaCo);
+    ImprimeCruz(tabuleiro, linhaC,colunaC);
+    ImprimeOctaedro(tabuleiro, linhaO,colunaO);
+    ImprimeNavio(tabuleiro,linhaH, colunaH, 1);
+    ImprimeNavio(tabuleiro, linhaV, colunaV, 2);
+    ImprimeNavio(tabuleiro, linhaD1, colunaD1, 3);
+    ImprimeNavio(tabuleiro,linhaD2, colunaD2, 4);
+    ImprimeTabuleiro(tabuleiro);
 
     return 0;
 }
